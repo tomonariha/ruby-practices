@@ -9,7 +9,5 @@ def fizzbuzz
     else puts number
     end
   end
-
 end
-
 fizzbuzz
