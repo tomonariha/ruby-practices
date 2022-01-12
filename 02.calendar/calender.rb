@@ -22,6 +22,13 @@ def calender
     if day.day < 10
       print(" ")
     end
+    if year == Date.today.year && month == Date.today.mon && day.day == Date.today.day
+      print("\e[7m#{day.day}\e[0m")
+      if day.saturday? == true
+        print("\n")
+      end
+      next
+    end
     print(day.day)
     if day.saturday? == true
       print("\n")
