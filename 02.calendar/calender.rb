@@ -1,7 +1,17 @@
 require 'date'
+require 'optparse'
 def calender
-  first_day = Date.new(2022, 1, 1)
-  last_day = Date.new(2022, 1, -1)
+  options = ARGV.getopts('m:','y:')
+  if options["y"] == nil
+    year = Date.today.year
+  else year = options["y"].to_i
+  end
+  if options["m"] == nil
+    month = Date.today.mon
+  else month = options["m"].to_i
+  end
+  first_day = Date.new(year, month, 1)
+  last_day = Date.new(year, month, -1)
   print("      " + first_day.mon.to_s + "月 " + first_day.year.to_s + "\n")
   print(" 日 月 火 水 木 金 土\n")
   first_day.wday.times do
