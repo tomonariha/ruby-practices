@@ -5,10 +5,18 @@ def calender
   if options["y"] == nil
     year = Date.today.year
   else year = options["y"].to_i
+    unless year.between?(1, 9999) == true
+      print("cal: year `#{options["y"]}' not in range 1..9999")
+      exit
+    end
   end
   if options["m"] == nil
     month = Date.today.mon
   else month = options["m"].to_i
+    unless month.between?(1, 12) == true 
+      print("cal: #{options["m"]} is neither a month number(1..12) nor name")
+      exit
+    end 
   end
   first_day = Date.new(year, month, 1)
   last_day = Date.new(year, month, -1)
