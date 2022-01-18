@@ -15,7 +15,7 @@ class Calendar
       print(' ')
       @this_day = day.day
       print(' ') if @this_day.between?(1, 9)
-      if is_today?
+      if today?
         print("\e[7m#{@this_day}\e[0m")
       else
         print(@this_day)
@@ -31,7 +31,7 @@ class Calendar
     @first_day = Date.new(@year, @month, 1)
     @last_day = Date.new(@year, @month, -1)
   end
-  
+
   def get_option
     options = ARGV.getopts('m:', 'y:')
     if options['y'].nil?
@@ -54,7 +54,7 @@ class Calendar
     end
   end
 
-  def is_today?
+  def today?
     @year == Date.today.year && @month == Date.today.mon && @this_day == Date.today.day
   end
 end
