@@ -32,7 +32,7 @@ class Calendar
     @last_day = Date.new(@year, @month, -1)
   end
 
-  def check_wether_today?
+  def is_today?
     @year == Date.today.year && @month == Date.today.mon && @this_day == Date.today.day
   end
 
@@ -47,7 +47,7 @@ class Calendar
       print(' ')
       @this_day = day.day
       print(' ') if @this_day.between?(1, 9)
-      if check_wether_today?
+      if is_today?
         print("\e[7m#{@this_day}\e[0m")
       else
         print(@this_day)
