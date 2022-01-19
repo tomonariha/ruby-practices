@@ -37,11 +37,8 @@ frames.each.with_index(1) do |frame, lane|
     end
   end
   if lane.between?(1,9)
-    if frame[0] == 10 # strike
-      strike = true 
-    elsif frame.sum == 10 # spare
-      spare = true
-    end 
+    strike = frame[0] == 10
+    spare = !strike && frame.sum == 10
   end
   point += frame.sum
 end
