@@ -14,8 +14,7 @@ class Calendar
     (@first_day..@last_day).each do |day|
       @this_day = day.day
       if today?
-        print (' ')
-        print "\e[7m#{@this_day.to_s.rjust(2)}\e[0m"
+        print " \e[7m#{@this_day.to_s.rjust(2)}\e[0m"
       else
         print @this_day.to_s.rjust(3)
       end
