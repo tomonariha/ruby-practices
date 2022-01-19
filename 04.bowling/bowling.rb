@@ -17,11 +17,11 @@ point = 0
 spare = false # spare flag
 strike = false # strike flag
 frames.each.with_index(1) do |frame, lane|
-  if spare == true
+  if spare
     point += frame[0]
     spare = false
   end
-  if strike == true
+  if strike 
     if frame[0] == 10
       point += 10
       strike = false
