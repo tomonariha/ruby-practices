@@ -16,16 +16,21 @@ frames = shots.each_slice(2).to_a
 point = 0
 spare = false # spare flag
 strike = false # strike flag
+double_strike = false # double strike flag
 frames.each.with_index(1) do |frame, lane|
   if spare
     point += frame[0]
     spare = false
   end
+  if double_strike
+    point += frame[0]
+    double_strike = false
+  end
   if strike 
     if frame[0] == 10
       point += 10
       strike = false
-      spare = true
+      double_strike = true
     else
       point += frame[0]
       point += frame[1]
