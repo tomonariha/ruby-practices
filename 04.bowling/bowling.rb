@@ -36,14 +36,13 @@ frames.each.with_index(1) do |frame, lane|
       strike = false
     end
   end
-  if frame[0] == 10 # strike
-    point += frame.sum
-    strike = true if lane < 10
-  elsif frame.sum == 10 # spare
-    point += frame.sum
-    spare = true if lane < 10
-  else
-    point += frame.sum
+  if lane.between?(1,9)
+    if frame[0] == 10 # strike
+      strike = true 
+    elsif frame.sum == 10 # spare
+      spare = true
+    end 
   end
+  point += frame.sum
 end
 puts point
