@@ -6,18 +6,18 @@ require 'optparse'
 class Calendar
   def print_days
     get_first_and_last_day
-    print("      #{@first_day.mon}月 #{@first_day.year}\n")
+    print("#{@first_day.mon.to_s.rjust(8)}月 #{@first_day.year}\n")
     print(" 日 月 火 水 木 金 土\n")
     @first_day.wday.times do
       print('   ')
     end
     (@first_day..@last_day).each do |day|
-      print(' ')
       @this_day = day.day
       if today?
-        print "\e[7m#{@this_day}\e[0m".to_s.rjust(2)
+        print (' ')
+        print "\e[7m#{@this_day.to_s.rjust(2)}\e[0m"
       else
-        print @this_day.to_s.rjust(2)
+        print @this_day.to_s.rjust(3)
       end
       print("\n") if day.saturday?
     end
