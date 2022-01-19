@@ -14,11 +14,9 @@ end
 
 frames = shots.each_slice(2).to_a
 point = 0
-lane = 0 # count lane
 spare = false # spare flag
 strike = false # strike flag
-frames.each do |frame|
-  lane += 1
+frames.each.with_index(1) do |frame, lane|
   if spare == true
     point += frame[0]
     spare = false
