@@ -14,11 +14,10 @@ class Calendar
     (@first_day..@last_day).each do |day|
       print(' ')
       @this_day = day.day
-      print(' ') if @this_day.between?(1, 9)
       if today?
-        print("\e[7m#{@this_day}\e[0m")
+        print "\e[7m#{@this_day}\e[0m".to_s.rjust(2)
       else
-        print(@this_day)
+        print @this_day.to_s.rjust(2)
       end
       print("\n") if day.saturday?
     end
