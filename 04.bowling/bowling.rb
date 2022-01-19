@@ -12,10 +12,7 @@ scores.each do |s|
   end
 end
 
-frames = []
-shots.each_slice(2) do |s|
-  frames << s
-end
+frames = shots.each_slice(2).to_a
 point = 0
 lane = 0 # count lane
 spare = false # spare flag
