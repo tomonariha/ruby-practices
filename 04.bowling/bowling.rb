@@ -32,16 +32,15 @@ frames.each.with_index(1) do |frame, lane|
       strike = false
       double_strike = true
     else
-      point += frame[0]
-      point += frame[1]
+      point += frame.sum
       strike = false
     end
   end
   if frame[0] == 10 # strike
-    point += 10
+    point += frame.sum
     strike = true if lane < 10
   elsif frame.sum == 10 # spare
-    point += 10
+    point += frame.sum
     spare = true if lane < 10
   else
     point += frame.sum
