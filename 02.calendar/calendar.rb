@@ -12,11 +12,10 @@ class Calendar
       print('   ')
     end
     (@first_day..@last_day).each do |day|
-      @this_day = day.day
-      if today?
-        print " \e[7m#{@this_day.to_s.rjust(2)}\e[0m"
+      if today?(day)
+        print " \e[7m#{day.day.to_s.rjust(2)}\e[0m"
       else
-        print @this_day.to_s.rjust(3)
+        print day.day.to_s.rjust(3)
       end
       print("\n") if day.saturday?
     end
@@ -52,8 +51,8 @@ class Calendar
     end
   end
 
-  def today?
-    @year == Date.today.year && @month == Date.today.mon && @this_day == Date.today.day
+  def today?(day)
+    day == Date.today
   end
 end
 
