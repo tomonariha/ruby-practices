@@ -1,6 +1,15 @@
 # frozen_string_literal: true
 
+require 'optparse'
+
 COLUMN = 3
+
+def parse_options
+  OptionParser.new do |opt|
+    opt.on('-a') { |v| @option_a = v }
+    opt.parse!(ARGV)
+  end
+end
 
 def print_list
   generate_list
@@ -15,8 +24,14 @@ def print_list
 end
 
 def generate_list
+  parse_options
   @list = []
-  Dir.glob('*') { |f| @list << f }
+  if @option_a
+    Dir.foreach('.') { |f| @list << f }
+    @list.sort!
+  else
+    Dir.glob('*') { |f| @list << f }
+  end
 end
 
 print_list
