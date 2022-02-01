@@ -7,6 +7,7 @@ COLUMN = 3
 def parse_options
   OptionParser.new do |opt|
     opt.on('-a') { |v| @option_a = v }
+    opt.on('-r') { |v| @option_r = v }
     opt.parse!(ARGV)
   end
 end
@@ -32,6 +33,7 @@ def generate_list
   else
     Dir.glob('*') { |f| @list << f }
   end
+  @list.reverse! if @option_r
 end
 
 print_list
