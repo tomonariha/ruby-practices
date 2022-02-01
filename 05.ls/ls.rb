@@ -28,8 +28,7 @@ def generate_list
   parse_options
   @list = []
   if @option_a
-    Dir.foreach('.') { |f| @list << f }
-    @list.sort!
+    Dir.glob('*', File::FNM_DOTMATCH) { |f| @list << f }
   else
     Dir.glob('*') { |f| @list << f }
   end
