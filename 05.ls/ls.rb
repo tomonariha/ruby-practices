@@ -52,13 +52,13 @@ def processing_data(list)
 end
 
 def sizing_list(list)
+  @total_blocks = []
+  @nlink_list = []
+  @user_list = []
+  @gloup_list = []
+  @size_list = []
   list.each do |name|
     file_status = File.stat(name)
-    @total_blocks = []
-    @nlink_list = []
-    @user_list = []
-    @gloup_list = []
-    @size_list = []
     @total_blocks << file_status.blocks
     @nlink_list << file_status.nlink.to_s.size
     @user_list << Etc.getpwuid(file_status.uid).name.size
