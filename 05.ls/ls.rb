@@ -73,7 +73,7 @@ def print_long_list(file_status, file_name, permission_number)
   file_type = { 'file' => '-', 'directory' => 'd',
                 'characterSpecial' => 'c', 'blockSpecial' => 'b', 'fifo' => 'p',
                 'link' => 'l', 'socket' => 's', 'unknown' => 'u' }
-  permission = { 1 => '--x', 2 => '-w-', 3 => '-wx', 4 => 'r--', 5 => 'r-x',
+  permission = { 0 => '---', 1 => '--x', 2 => '-w-', 3 => '-wx', 4 => 'r--', 5 => 'r-x',
                  6 => 'rw-', 7 => 'rwx' }
   print file_type[file_status.ftype.to_s]
   permission_number.each { |i| print permission[i] }
