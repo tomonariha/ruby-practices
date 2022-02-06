@@ -15,14 +15,17 @@ def parse_options
 end
 
 def print_list(list)
-  sizing_list(list) if @option_l
-  row = list.size / COLUMN
-  row += 1 unless (list.size % COLUMN).zero?
-  (0...row).each do |x|
-    (0...COLUMN).each do |y|
-      print list[x + row * y].to_s.ljust(24)
+  if @option_l
+    sizing_list(list)
+  else
+    row = list.size / COLUMN
+    row += 1 unless (list.size % COLUMN).zero?
+    (0...row).each do |x|
+      (0...COLUMN).each do |y|
+        print list[x + row * y].to_s.ljust(24)
+      end
+      print "\n"
     end
-    print "\n"
   end
 end
 
@@ -47,7 +50,6 @@ def processing_data(list, **size_data)
     permission_number = permission_origin.digits.reverse
     print_long_list(file_status, file_name, permission_number, **size_data)
   end
-  exit
 end
 
 def sizing_list(list)
