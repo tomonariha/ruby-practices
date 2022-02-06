@@ -15,7 +15,7 @@ def parse_options
 end
 
 def print_list(list)
-  processing_data(list) if @option_l
+  sizing_list(list) if @option_l
   row = list.size / COLUMN
   row += 1 unless (list.size % COLUMN).zero?
   (0...row).each do |x|
@@ -39,36 +39,40 @@ def generate_list
   print_list(list)
 end
 
-def processing_data(list)
-  sizing_list(list)
+def processing_data(list, **size_data)
   list.each do |file_name|
     file_status = File.stat(file_name)
     origin_number = format('0%o', file_status.mode)
     permission_origin = origin_number.to_i % 1000
     permission_number = permission_origin.digits.reverse
-    print_long_list(file_status, file_name, permission_number)
+    print_long_list(file_status, file_name, permission_number, **size_data)
   end
   exit
 end
 
 def sizing_list(list)
-  @total_blocks = []
-  @nlink_list = []
-  @user_list = []
-  @gloup_list = []
-  @size_list = []
+  total_blocks = []
+  nlink_list = []
+  user_list = []
+  gloup_list = []
+  size_list = []
   list.each do |name|
     file_status = File.stat(name)
-    @total_blocks << file_status.blocks
-    @nlink_list << file_status.nlink.to_s.size
-    @user_list << Etc.getpwuid(file_status.uid).name.size
-    @gloup_list << Etc.getgrgid(file_status.gid).name.size
-    @size_list << file_status.size.to_s.size
+    total_blocks << file_status.blocks
+    nlink_list << file_status.nlink.to_s.size
+    user_list << Etc.getpwuid(file_status.uid).name.size
+    gloup_list << Etc.getgrgid(file_status.gid).name.size
+    size_list << file_status.size.to_s.size
   end
-  print "total #{@total_blocks.sum}\n"
+  print "total #{total_blocks.sum}\n"
+  size_data = {nlink_size: nlink_list.max,
+               user_size: user_list.max, 
+               gloup_size: gloup_list.max,
+               size_size: size_list.max}
+  processing_data(list, **size_data)
 end
 
-def print_long_list(file_status, file_name, permission_number)
+def print_long_list(file_status, file_name, permission_number, **size_data)
   margin = 2
   file_type = { 'file' => '-', 'directory' => 'd',
                 'characterSpecial' => 'c', 'blockSpecial' => 'b', 'fifo' => 'p',
@@ -77,10 +81,10 @@ def print_long_list(file_status, file_name, permission_number)
                  6 => 'rw-', 7 => 'rwx' }
   print file_type[file_status.ftype.to_s]
   permission_number.each { |i| print permission[i] }
-  print file_status.nlink.to_s.rjust(@nlink_list.max + margin)
-  print Etc.getpwuid(file_status.uid).name.rjust(@user_list.max + margin - 1)
-  print Etc.getgrgid(file_status.gid).name.rjust(@gloup_list.max + margin)
-  print file_status.size.to_s.rjust(@size_list.max + margin)
+  print file_status.nlink.to_s.rjust(size_data[:nlink_size] + margin)
+  print Etc.getpwuid(file_status.uid).name.rjust(size_data[:user_size] + margin -1)
+  print Etc.getgrgid(file_status.gid).name.rjust(size_data[:gloup_size] + margin)
+  print file_status.size.to_s.rjust(size_data[:size_size] + margin)
   print file_status.mtime.strftime(' %_m %e %R ')
   print file_name
   print "\n"
