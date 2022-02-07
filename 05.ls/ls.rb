@@ -6,16 +6,18 @@ require 'etc'
 COLUMN = 3
 
 def parse_options
+  options = {}
   OptionParser.new do |opt|
-    opt.on('-a') { |v| @option_a = v }
-    opt.on('-r') { |v| @option_r = v }
-    opt.on('-l') { |v| @option_l = v }
+    opt.on('-a') { |v| options[:a] = v }
+    opt.on('-r') { |v| options[:r] = v }
+    opt.on('-l') { |v| options[:l] = v }
     opt.parse!(ARGV)
   end
+  generate_list(**options)
 end
 
-def print_list(list)
-  if @option_l
+def print_list(list, **options)
+  if options[:l]
     sizing_list(list)
   else
     row = list.size / COLUMN
@@ -29,17 +31,16 @@ def print_list(list)
   end
 end
 
-def generate_list
-  parse_options
+def generate_list(**options)
   list = []
-  if @option_a
+  if options[:a]
     Dir.foreach('.') { |f| list << f }
     list.sort!
   else
     Dir.glob('*') { |f| list << f }
   end
-  list.reverse! if @option_r
-  print_list(list)
+  list.reverse! if options[:r]
+  print_list(list, **options)
 end
 
 def processing_data(list, **size_data)
@@ -67,10 +68,10 @@ def sizing_list(list)
     size_list << file_status.size.to_s.size
   end
   print "total #{total_blocks.sum}\n"
-  size_data = {nlink_size: nlink_list.max,
-               user_size: user_list.max, 
-               gloup_size: gloup_list.max,
-               size_size: size_list.max}
+  size_data = { nlink_size: nlink_list.max,
+                user_size: user_list.max,
+                gloup_size: gloup_list.max,
+                size_size: size_list.max }
   processing_data(list, **size_data)
 end
 
@@ -95,7 +96,7 @@ def print_long_list(file_status, file_name, permission_number, **size_data)
   print file_type[file_status.ftype.to_s]
   permission_number.each { |i| print permission[i] }
   print file_status.nlink.to_s.rjust(size_data[:nlink_size] + margin)
-  print Etc.getpwuid(file_status.uid).name.rjust(size_data[:user_size] + margin -1)
+  print Etc.getpwuid(file_status.uid).name.rjust(size_data[:user_size] + margin - 1)
   print Etc.getgrgid(file_status.gid).name.rjust(size_data[:gloup_size] + margin)
   print file_status.size.to_s.rjust(size_data[:size_size] + margin)
   print file_status.mtime.strftime(' %_m %e %R ')
@@ -103,4 +104,4 @@ def print_long_list(file_status, file_name, permission_number, **size_data)
   print "\n"
 end
 
-generate_list
+parse_options
