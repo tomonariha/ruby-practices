@@ -13,10 +13,10 @@ def parse_options
     opt.on('-l') { |v| options[:l] = v }
     opt.parse!(ARGV)
   end
-  generate_list(**options)
+  generate_list(options)
 end
 
-def print_list(list, **options)
+def print_list(list, options)
   if options[:l]
     sizing_list(list)
   else
@@ -31,7 +31,7 @@ def print_list(list, **options)
   end
 end
 
-def generate_list(**options)
+def generate_list(options)
   list = []
   if options[:a]
     Dir.foreach('.') { |f| list << f }
@@ -40,16 +40,16 @@ def generate_list(**options)
     Dir.glob('*') { |f| list << f }
   end
   list.reverse! if options[:r]
-  print_list(list, **options)
+  print_list(list, options)
 end
 
-def processing_data(list, **size_data)
+def processing_data(list, size_data)
   list.each do |file_name|
     file_status = File.stat(file_name)
     origin_number = format('0%o', file_status.mode)
     permission_origin = origin_number.to_i % 1000
     permission_number = permission_origin.digits.reverse
-    print_long_list(file_status, file_name, permission_number, **size_data)
+    print_long_list(file_status, file_name, permission_number, size_data)
   end
 end
 
@@ -72,33 +72,34 @@ def sizing_list(list)
                 user_size: user_list.max,
                 gloup_size: gloup_list.max,
                 size_size: size_list.max }
-  processing_data(list, **size_data)
+  processing_data(list, size_data)
 end
 
-def print_long_list(file_status, file_name, permission_number, **size_data)
-  margin = 2
-  file_type = { 'file' => '-',
-                'directory' => 'd',
-                'characterSpecial' => 'c',
-                'blockSpecial' => 'b',
-                'fifo' => 'p',
-                'link' => 'l',
-                'socket' => 's',
-                'unknown' => 'u' }
-  permission = { 0 => '---',
-                 1 => '--x',
-                 2 => '-w-',
-                 3 => '-wx',
-                 4 => 'r--',
-                 5 => 'r-x',
-                 6 => 'rw-',
-                 7 => 'rwx' }
-  print file_type[file_status.ftype.to_s]
-  permission_number.each { |i| print permission[i] }
-  print file_status.nlink.to_s.rjust(size_data[:nlink_size] + margin)
-  print Etc.getpwuid(file_status.uid).name.rjust(size_data[:user_size] + margin - 1)
-  print Etc.getgrgid(file_status.gid).name.rjust(size_data[:gloup_size] + margin)
-  print file_status.size.to_s.rjust(size_data[:size_size] + margin)
+MARGIN = 2
+FILE_TYPES = { 'file' => '-',
+               'directory' => 'd',
+               'characterSpecial' => 'c',
+               'blockSpecial' => 'b',
+               'fifo' => 'p',
+               'link' => 'l',
+               'socket' => 's',
+               'unknown' => 'u' }
+PERMISSIONS = { 0 => '---',
+                1 => '--x',
+                2 => '-w-',
+                3 => '-wx',
+                4 => 'r--',
+                5 => 'r-x',
+                6 => 'rw-',
+                7 => 'rwx' }
+
+def print_long_list(file_status, file_name, permission_number, size_data)
+  print FILE_TYPES[file_status.ftype.to_s]
+  permission_number.each { |i| print PERMISSIONS[i] }
+  print file_status.nlink.to_s.rjust(size_data[:nlink_size] + MARGIN)
+  print Etc.getpwuid(file_status.uid).name.rjust(size_data[:user_size] + MARGIN - 1)
+  print Etc.getgrgid(file_status.gid).name.rjust(size_data[:gloup_size] + MARGIN)
+  print file_status.size.to_s.rjust(size_data[:size_size] + MARGIN)
   print file_status.mtime.strftime(' %_m %e %R ')
   print file_name
   print "\n"
