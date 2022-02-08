@@ -13,21 +13,17 @@ def parse_options
     opt.on('-l') { |v| options[:l] = v }
     opt.parse!(ARGV)
   end
-  generate_list(options)
+  options
 end
 
-def print_list(list, options)
-  if options[:l]
-    sizing_list(list)
-  else
-    row = list.size / COLUMN
-    row += 1 unless (list.size % COLUMN).zero?
-    (0...row).each do |x|
-      (0...COLUMN).each do |y|
-        print list[x + row * y].to_s.ljust(24)
-      end
-      print "\n"
+def print_list(list)
+  row = list.size / COLUMN
+  row += 1 unless (list.size % COLUMN).zero?
+  (0...row).each do |x|
+    (0...COLUMN).each do |y|
+      print list[x + row * y].to_s.ljust(24)
     end
+    print "\n"
   end
 end
 
@@ -40,7 +36,7 @@ def generate_list(options)
     Dir.glob('*') { |f| list << f }
   end
   list.reverse! if options[:r]
-  print_list(list, options)
+  list
 end
 
 def processing_data(list, size_data)
@@ -68,11 +64,10 @@ def sizing_list(list)
     size_list << file_status.size.to_s.size
   end
   print "total #{total_blocks.sum}\n"
-  size_data = { nlink_size: nlink_list.max,
-                user_size: user_list.max,
-                gloup_size: gloup_list.max,
-                size_size: size_list.max }
-  processing_data(list, size_data)
+  { nlink_size: nlink_list.max,
+    user_size: user_list.max,
+    gloup_size: gloup_list.max,
+    size_size: size_list.max }
 end
 
 MARGIN = 2
@@ -83,7 +78,7 @@ FILE_TYPES = { 'file' => '-',
                'fifo' => 'p',
                'link' => 'l',
                'socket' => 's',
-               'unknown' => 'u' }
+               'unknown' => 'u' }.freeze
 PERMISSIONS = { 0 => '---',
                 1 => '--x',
                 2 => '-w-',
@@ -91,7 +86,7 @@ PERMISSIONS = { 0 => '---',
                 4 => 'r--',
                 5 => 'r-x',
                 6 => 'rw-',
-                7 => 'rwx' }
+                7 => 'rwx' }.freeze
 
 def print_long_list(file_status, file_name, permission_number, size_data)
   print FILE_TYPES[file_status.ftype.to_s]
@@ -105,4 +100,15 @@ def print_long_list(file_status, file_name, permission_number, size_data)
   print "\n"
 end
 
-parse_options
+def main
+  options = parse_options
+  list = generate_list(options)
+  if options[:l]
+    size_data = sizing_list(list)
+    processing_data(list, size_data)
+  else
+    print_list(list)
+  end
+end
+
+main
