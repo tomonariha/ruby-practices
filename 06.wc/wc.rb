@@ -18,24 +18,24 @@ def count_bytesize(lines)
 end
 
 def count_line(lines)
-  lines.size
+  lines.sum { |line| line.scan(/\n/).size }
 end
 
 def count_words(lines)
   lines.sum { |line| line.split(/\s+/).size }
 end
 
+def no_options(options)
+  !options[:l] && !options[:w] && !options[:c]
+end
+
+COMPONENT_SIZE = 8
+
 def print_list(line, words, bytesize, name, options)
-  if !options[:l] && !options[:w] && !options[:c]
-    print line.to_s.rjust(8)
-    print words.to_s.rjust(8)
-    print bytesize.to_s.rjust(8)
-  else
-    print line.to_s.rjust(8) if options[:l]
-    print words.to_s.rjust(8) if options[:w]
-    print bytesize.to_s.rjust(8) if options[:c]
-  end
-  print " #{name}\n"
+  print line.to_s.rjust(COMPONENT_SIZE) if options[:l] || no_options(options)
+  print words.to_s.rjust(COMPONENT_SIZE) if options[:w] || no_options(options)
+  print bytesize.to_s.rjust(COMPONENT_SIZE) if options[:c] || no_options(options)
+  puts " #{name}"
 end
 
 def print_files(file_names, options)
@@ -43,8 +43,7 @@ def print_files(file_names, options)
   total_words = []
   total_bytesize = []
   file_names.each do |file_name|
-    file = File.open(file_name.to_s)
-    lines = file.readlines
+    lines = File.readlines(file_name.to_s)
     total_line << count_line(lines)
     total_words << count_words(lines)
     total_bytesize << count_bytesize(lines)
