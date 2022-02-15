@@ -38,31 +38,30 @@ def print_list(line, words, bytesize, name, options)
   print " #{name}\n"
 end
 
-def print_files(options)
+def print_files(file_names, options)
   total_line = []
   total_words = []
   total_bytesize = []
-  ARGV.each do |arg|
-    file = File.open(arg.to_s)
+  file_names.each do |file_name|
+    file = File.open(file_name.to_s)
     lines = file.readlines
     total_line << count_line(lines)
     total_words << count_words(lines)
     total_bytesize << count_bytesize(lines)
-    name = arg
-    print_list(count_line(lines), count_words(lines), count_bytesize(lines), name, options)
+    print_list(count_line(lines), count_words(lines), count_bytesize(lines), file_name, options)
   end
   name = 'total'
-  print_list(total_line.sum, total_words.sum, total_bytesize.sum, name, options) if ARGV.size > 1
+  print_list(total_line.sum, total_words.sum, total_bytesize.sum, name, options) if file_names.size > 1
 end
 
 def main
   options = parse_options
-  if ARGV == []
+  if ARGV.empty?
     lines = $stdin.readlines
     name = nil
     print_list(count_line(lines), count_words(lines), count_bytesize(lines), name, options)
   else
-    print_files(options)
+    print_files(ARGV, options)
   end
 end
 
