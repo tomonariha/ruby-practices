@@ -13,21 +13,21 @@ def parse_options
   options
 end
 
-def bytesize(text)
+def bytesize(lines)
   bytesize = []
-  text.each { |b| bytesize << b.bytesize }
+  lines.each { |b| bytesize << b.bytesize }
   bytesize.sum
 end
 
-def line(text)
+def line(lines)
   line = []
-  text.each { |l| line << l.scan(/\n/).size }
+  lines.each { |l| line << l.scan(/\n/).size }
   line.sum
 end
 
-def words(text)
+def words(lines)
   word = []
-  text.each { |w| word << w.scan(/\S\s/).size }
+  lines.each { |w| word << w.scan(/\S\s/).size }
   word.sum
 end
 
@@ -50,12 +50,12 @@ def print_files(options)
   total_bytesize = []
   ARGV.each do |arg|
     file = File.open(arg.to_s)
-    text = file.readlines
-    total_line << line(text)
-    total_words << words(text)
-    total_bytesize << bytesize(text)
+    lines = file.readlines
+    total_line << line(lines)
+    total_words << words(lines)
+    total_bytesize << bytesize(lines)
     name = arg
-    print_list(line(text), words(text), bytesize(text), name, options)
+    print_list(line(lines), words(lines), bytesize(lines), name, options)
   end
   name = 'total'
   print_list(total_line.sum, total_words.sum, total_bytesize.sum, name, options) if ARGV.size > 1
@@ -64,9 +64,9 @@ end
 def main
   options = parse_options
   if ARGV == []
-    text = $stdin.readlines
+    lines = $stdin.readlines
     name = nil
-    print_list(line(text), words(text), bytesize(text), name, options)
+    print_list(line(lines), words(lines), bytesize(lines), name, options)
   else
     print_files(options)
   end
