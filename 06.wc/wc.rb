@@ -18,7 +18,7 @@ def count_bytesize(lines)
 end
 
 def count_line(lines)
-  lines.sum { |line| line.scan(/\n/).size }
+  lines.join.count("\n")
 end
 
 def count_words(lines)
