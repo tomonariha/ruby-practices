@@ -25,16 +25,17 @@ def count_words(lines)
   lines.sum { |line| line.split(/\s+/).size }
 end
 
-def no_options(options)
+def no_options?(options)
   !options[:l] && !options[:w] && !options[:c]
 end
 
 COMPONENT_SIZE = 8
 
 def print_list(line, words, bytesize, name, options)
-  print line.to_s.rjust(COMPONENT_SIZE) if options[:l] || no_options(options)
-  print words.to_s.rjust(COMPONENT_SIZE) if options[:w] || no_options(options)
-  print bytesize.to_s.rjust(COMPONENT_SIZE) if options[:c] || no_options(options)
+  no_options = no_options?(options)
+  print line.to_s.rjust(COMPONENT_SIZE) if options[:l] || no_options
+  print words.to_s.rjust(COMPONENT_SIZE) if options[:w] || no_options
+  print bytesize.to_s.rjust(COMPONENT_SIZE) if options[:c] || no_options
   puts " #{name}"
 end
 
