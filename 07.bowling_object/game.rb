@@ -7,19 +7,14 @@ class Game
     @status = :normal
   end
 
-  def culc_points(arg = ARGV[0])
+  def calc_points(arg = ARGV[0])
     total_points = []
-    generate_frame_data(arg).each.with_index(1) do |score, frame_number|
-      frame = Frame.new(score[0], score[1])
-      frame.status = @status
+    generate_frame_data(arg).each.with_index do |shot, frame_number|
+      frame = Frame.new(shot)
+      frame.status = :strike_remainder if (@status == :strike || @status == :double_strike) && frame_number == 10
+      frame.status = @status if frame_number < 10
       total_points << frame.score
-      @status = if frame_number == 10 && (frame.next_status == :strike || frame.next_status == :double_strike)
-                  :strike_remainder
-                elsif frame_number > 9
-                  :normal
-                else
-                  frame.next_status
-                end
+      @status = frame.next_status
     end
     total_points.sum
   end

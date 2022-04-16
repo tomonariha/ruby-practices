@@ -3,4 +3,4 @@
 require_relative 'game'
 
 game = Game.new
-puts game.culc_points
+puts game.calc_points
