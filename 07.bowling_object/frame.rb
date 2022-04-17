@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
 class Frame
-  attr_reader :first_shot, :second_shot
-  attr_accessor :status
-
-  def initialize(shot)
+  def initialize(shot, status)
     @first_shot = shot[0]
     @second_shot = shot[1] ||= 0
-    @status = :normal
+    @status = status
   end
 
   BONUS = { double_strike: [3, 2],
@@ -17,15 +14,15 @@ class Frame
             normal: [1, 1] }.freeze
 
   def score
-    [first_shot * BONUS[status][0], second_shot * BONUS[status][1]].sum
+    [@first_shot * BONUS[@status][0], @second_shot * BONUS[@status][1]].sum
   end
 
   def next_status
-    if first_shot == 10 && (status == :double_strike || status == :strike)
+    if @first_shot == 10 && (@status == :double_strike || @status == :strike)
       :double_strike
-    elsif first_shot == 10
+    elsif @first_shot == 10
       :strike
-    elsif [first_shot, second_shot].sum == 10
+    elsif [@first_shot, @second_shot].sum == 10
       :spare
     else
       :normal
