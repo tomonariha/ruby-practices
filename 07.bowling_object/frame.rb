@@ -17,8 +17,12 @@ class Frame
     [@first_shot * BONUS[@status][0], @second_shot * BONUS[@status][1]].sum
   end
 
-  def next_status
-    if @first_shot == 10 && (@status == :double_strike || @status == :strike)
+  def next_status(frame_number)
+    if @first_shot == 10 && (@status == :double_strike || @status == :strike) && frame_number == 10
+      :strike_remainder
+    elsif frame_number >= 10
+      :normal
+    elsif @first_shot == 10 && (@status == :double_strike || @status == :strike)
       :double_strike
     elsif @first_shot == 10
       :strike
