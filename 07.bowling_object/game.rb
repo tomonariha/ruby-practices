@@ -3,30 +3,22 @@
 require_relative 'frame'
 
 class Game
-  def calc_points(arg = ARGV[0])
+  def calc_points(score_text = ARGV[0])
     prev_status = :normal
-    total_points = []
-    generate_frame_data(arg).each.with_index(1) do |shot, frame_number|
+    generate_frame_data(score_text).each.with_index(1).sum do |shot, frame_number|
       frame = Frame.new(shot, prev_status)
-      total_points << frame.score
       prev_status = frame.current_status(frame_number)
+      frame.score
     end
-    total_points.sum
   end
 
   private
 
-  def generate_frame_data(arg)
-    scores = arg.split(',')
-    shots = []
-    scores.each do |score|
-      if score == 'X'
-        shots << 10
-        shots << 0
-      else
-        shots << score.to_i
-      end
-    end
-    shots.each_slice(2).to_a
+  def generate_frame_data(score_text)
+    score_text
+      .split(',')
+      .flat_map { |score| score == 'X' ? [10, 0] : score.to_i }
+      .each_slice(2)
+      .to_a
   end
 end
