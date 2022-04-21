@@ -3,16 +3,13 @@
 require_relative 'frame'
 
 class Game
-  def initialize
-    @next_status = :normal
-  end
-
   def calc_points(arg = ARGV[0])
+    prev_status = :normal
     total_points = []
     generate_frame_data(arg).each.with_index(1) do |shot, frame_number|
-      frame = Frame.new(shot, @next_status)
+      frame = Frame.new(shot, prev_status)
       total_points << frame.score
-      @next_status = frame.next_status(frame_number)
+      prev_status = frame.current_status(frame_number)
     end
     total_points.sum
   end
