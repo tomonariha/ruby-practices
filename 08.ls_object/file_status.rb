@@ -25,23 +25,28 @@ class FileStatus
     7 => 'rwx'
   }.freeze
 
-  def building_data(file_name, length_list)
-    file_status = File.stat(file_name)
+  def initialize(file_name, length_data)
+    @file_name = file_name
+    @length_data = length_data
+    @file_status = File.stat(file_name)
+  end
+
+  def building_data
     {
-      file_type: FILE_TYPES[file_status.ftype.to_s],
-      permission: permission(file_status).map { |i| PERMISSIONS[i] }.join,
-      nlink: file_status.nlink.to_s.rjust(length_list[:nlink]),
-      user_name: Etc.getpwuid(file_status.uid).name.rjust(length_list[:user_name]),
-      gloup_name: Etc.getgrgid(file_status.gid).name.rjust(length_list[:gloup_name]),
-      size: file_status.size.to_s.rjust(length_list[:size]),
-      birth_time: file_status.mtime.strftime(' %_m %e %R '),
-      file_name: file_name
+      file_type: FILE_TYPES[@file_status.ftype.to_s],
+      permission: permission.map { |i| PERMISSIONS[i] }.join,
+      nlink: @file_status.nlink.to_s.rjust(@length_data[:nlink]),
+      user_name: Etc.getpwuid(@file_status.uid).name.rjust(@length_data[:user_name]),
+      gloup_name: Etc.getgrgid(@file_status.gid).name.rjust(@length_data[:gloup_name]),
+      size: @file_status.size.to_s.rjust(@length_data[:size]),
+      birth_time: @file_status.mtime.strftime(' %_m %e %R '),
+      file_name: @file_name
     }
   end
 
   private
 
-  def permission(file_status)
-    (format('0%o', file_status.mode).to_i % 1000).digits.reverse
+  def permission
+    (format('0%o', @file_status.mode).to_i % 1000).digits.reverse
   end
 end

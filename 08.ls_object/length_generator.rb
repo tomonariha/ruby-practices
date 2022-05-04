@@ -5,17 +5,21 @@ require 'etc'
 class LengthGenerator
   MARGIN = 2
 
-  def name_length(file_name_list)
-    { name_length: file_name_list.map(&:size).max + MARGIN }
+  def initialize(file_names)
+    @file_names = file_names
   end
 
-  def length_data(file_name_list)
+  def name_length
+    { name_length: @file_names.map(&:size).max + MARGIN }
+  end
+
+  def length_data
     total_blocks = []
     nlink_list = []
     user_list = []
     gloup_list = []
     size_list = []
-    file_name_list.each do |file_name|
+    @file_names.each do |file_name|
       file_status = File.stat(file_name)
       total_blocks << file_status.blocks
       nlink_list << file_status.nlink.to_s.size
