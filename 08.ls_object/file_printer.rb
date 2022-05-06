@@ -7,33 +7,47 @@ class FilePrinter
   COLUMN = 4
   MARGIN = 2
 
-  def initialize(file_names, options)
-    @file_names = file_names
+  def initialize(options)
     @options = options
+    @file_names =
+      if @options[:a]
+        Dir.foreach('.').to_a.sort!
+      else
+        Dir.glob('*')
+      end
   end
 
   def print_files
+    @file_names.reverse! if @options[:r]
     if @options[:l]
-      max_size_and_total_block_size = generate_max_size_and_total_block_size
-      puts "total #{max_size_and_total_block_size[:total_block_size]}"
-      @file_names.each do |file_name|
-        file_status = FileStatus.new(file_name, max_size_and_total_block_size)
-        puts file_status.building_data.values.join
-      end
+      print_long
     else
-      max_name_size = @file_names.map(&:size).max + MARGIN
-      row = @file_names.size / COLUMN
-      row += 1 unless (@file_names.size % COLUMN).zero?
-      (0...row).each do |x|
-        (0...COLUMN).each do |y|
-          print @file_names[x + row * y].to_s.ljust(max_name_size)
-        end
-        print "\n"
-      end
+      print_short
     end
   end
 
   private
+
+  def print_short
+    max_name_size = @file_names.map(&:size).max + MARGIN
+    row = @file_names.size / COLUMN
+    row += 1 unless (@file_names.size % COLUMN).zero?
+    (0...row).each do |x|
+      (0...COLUMN).each do |y|
+        print @file_names[x + row * y].to_s.ljust(max_name_size)
+      end
+      print "\n"
+    end
+  end
+
+  def print_long
+    max_size_and_total_block_size = generate_max_size_and_total_block_size
+    puts "total #{max_size_and_total_block_size[:total_block_size]}"
+    @file_names.each do |file_name|
+      file_status = FileStatus.new(file_name, max_size_and_total_block_size)
+      puts file_status.building_data.values.join
+    end
+  end
 
   def generate_max_size_and_total_block_size
     total_blocks = []

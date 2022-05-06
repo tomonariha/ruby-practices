@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'optparse'
-require_relative 'file_loader'
 require_relative 'file_printer'
 
 def parse_options
@@ -16,7 +15,4 @@ def parse_options
 end
 
 options = parse_options
-file_loader = FileLoader.new(options)
-file_names = file_loader.generate_list
-file_printer = FilePrinter.new(file_names, options)
-file_printer.print_files
+FilePrinter.new(options).print_files
