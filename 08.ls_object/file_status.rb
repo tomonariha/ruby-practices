@@ -25,9 +25,9 @@ class FileStatus
     7 => 'rwx'
   }.freeze
 
-  def initialize(file_name, length_data)
+  def initialize(file_name, max_size_and_total_block_size)
     @file_name = file_name
-    @length_data = length_data
+    @max_size_and_total_block_size = max_size_and_total_block_size
     @file_status = File.stat(file_name)
   end
 
@@ -35,10 +35,10 @@ class FileStatus
     {
       file_type: FILE_TYPES[@file_status.ftype.to_s],
       permission: permission.map { |i| PERMISSIONS[i] }.join,
-      nlink: @file_status.nlink.to_s.rjust(@length_data[:nlink]),
-      user_name: Etc.getpwuid(@file_status.uid).name.rjust(@length_data[:user_name]),
-      gloup_name: Etc.getgrgid(@file_status.gid).name.rjust(@length_data[:gloup_name]),
-      size: @file_status.size.to_s.rjust(@length_data[:size]),
+      nlink: @file_status.nlink.to_s.rjust(@max_size_and_total_block_size[:max_nlink_size]),
+      user_name: Etc.getpwuid(@file_status.uid).name.rjust(@max_size_and_total_block_size[:max_user_name_size]),
+      gloup_name: Etc.getgrgid(@file_status.gid).name.rjust(@max_size_and_total_block_size[:max_gloup_name_size]),
+      size: @file_status.size.to_s.rjust(@max_size_and_total_block_size[:max_size_size]),
       birth_time: @file_status.mtime.strftime(' %_m %e %R '),
       file_name: @file_name
     }

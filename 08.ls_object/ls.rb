@@ -2,8 +2,7 @@
 
 require 'optparse'
 require_relative 'file_loader'
-require_relative 'printer'
-require_relative 'length_generator'
+require_relative 'file_printer'
 
 def parse_options
   options = {}
@@ -19,13 +18,5 @@ end
 options = parse_options
 file_loader = FileLoader.new(options)
 file_names = file_loader.generate_list
-length_generator = LengthGenerator.new(file_names)
-if options[:l]
-  length_data = length_generator.length_data
-  printer = Printer.new(file_names, length_data)
-  printer.print_long
-else
-  name_length = length_generator.name_length
-  printer = Printer.new(file_names, name_length)
-  printer.print_short
-end
+file_printer = FilePrinter.new(file_names, options)
+file_printer.print_files
